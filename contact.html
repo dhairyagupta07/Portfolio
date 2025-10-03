@@ -67,8 +67,7 @@
 
                 <div class="contact-form scroll-reveal">
                     <div class="contact-form-container">
-                        <form action="https://formspree.io/f/xldpnvng" method="POST">
-                            <input type="hidden" name="_next" value="https://dhairyagupta.netlify.app/thankyou">
+                        <form id="contact-form">
                             <div class="form-group">
                                 <label for="name">Your Name</label>
                                 <input type="text" id="name" name="name" required />
@@ -178,7 +177,6 @@
         </div>
     </footer>
     <script>
-        // Script content is the same
         const scrollElements = document.querySelectorAll(".scroll-reveal");
 
         const elementInView = (el, dividend = 1) => {
@@ -215,5 +213,37 @@
             }, 1000);
         });
     </script>
+
+<script>
+    window.addEventListener("load", function() {
+      const form = document.getElementById('contact-form');
+      form.addEventListener("submit", function(e) {
+        e.preventDefault();
+        const data = new FormData(form);
+        const action = "https://formspree.io/f/xldpnvng";
+        fetch(action, {
+          method: 'POST',
+          body: data,
+          headers: {
+              'Accept': 'application/json'
+          }
+        }).then(response => {
+          if (response.ok) {
+            window.location.href = 'thankyou.html';
+          } else {
+            response.json().then(data => {
+              if (Object.hasOwn(data, 'errors')) {
+                alert(data["errors"].map(error => error["message"]).join(", "));
+              } else {
+                alert("Oops! There was a problem submitting your form");
+              }
+            })
+          }
+        }).catch(error => {
+          alert("Oops! There was a problem submitting your form");
+        });
+      });
+    });
+</script>
 </body>
 </html>
